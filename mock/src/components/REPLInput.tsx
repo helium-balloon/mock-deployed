@@ -58,6 +58,9 @@ export function REPLInput(props: REPLInputProps) {
         break;
       case "load":
         setIsLoaded(true);
+        var file_path = commandString.substring(commandString.indexOf(" ") + 1);
+        // search our mocked data for file path
+        // say if filepath is there or not (success)
         break;
       case "view":
         if (!isLoaded) {
