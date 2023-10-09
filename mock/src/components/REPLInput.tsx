@@ -7,8 +7,8 @@ interface REPLInputProps {
   // CHANGED
   history: string[];
   setHistory: Dispatch<SetStateAction<string[]>>;
-  mode: string;
-  setMode: Dispatch<SetStateAction<string>>;
+  //mode: string;
+  //setMode: Dispatch<SetStateAction<string>>;
 }
 // You can use a custom interface or explicit fields or both! An alternative to the current function header might be:
 // REPLInput(history: string[], setHistory: Dispatch<SetStateAction<string[]>>)
@@ -18,9 +18,8 @@ export function REPLInput(props: REPLInputProps) {
   const [commandString, setCommandString] = useState<string>("");
   // Manages the current amount of times the button is clicked
   const [count, setCount] = useState<number>(0);
-  const [isLoaded, setIsLoaded] = useState<boolean>();
-
-  setIsLoaded(false);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [mode, setMode] = useState<string>("brief");
 
   // This function is triggered when the button is clicked.
   function handleSubmit(commandString: string) {
@@ -37,15 +36,16 @@ export function REPLInput(props: REPLInputProps) {
     var first_word = commandString.substring(0, commandString.indexOf(" "));
 
     // changing mode first since this impacts what gets added to history below
+    // for testing, check to make sure that setMode switches at correct time or if it lags bc using state
     if (commandString == "mode verbose") {
-      props.setMode("verbose");
+      setMode("verbose");
     }
     if (commandString == "mode brief") {
-      props.setMode("brief");
+      setMode("brief");
     }
 
     // adding command to history based on if mode is verbose
-    if (props.mode == "verbose") {
+    if (mode == "verbose") {
       props.setHistory([...props.history, "Command: " + commandString]);
     }
 
@@ -54,7 +54,7 @@ export function REPLInput(props: REPLInputProps) {
     // RESULTS - which are returned no matter the mode
     switch (first_word) {
       case "mode":
-        output = "Mode has been switched to " + props.mode;
+        output = "Mode has been switched to " + mode;
         break;
       case "load":
         setIsLoaded(true);
@@ -76,10 +76,10 @@ export function REPLInput(props: REPLInputProps) {
         break;
     }
 
-    if (props.mode == "verbose") {
+    if (mode == "verbose") {
       props.setHistory([...props.history, "Output:" + output]);
     }
-    if (props.mode == "brief") {
+    if (mode == "brief") {
       props.setHistory([...props.history, output]);
     }
   }
