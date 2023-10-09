@@ -5,10 +5,10 @@ import { ControlledInput } from "./ControlledInput";
 interface REPLInputProps {
   // TODO: Fill this with desired props... Maybe something to keep track of the submitted commands
   // CHANGED
-  history: string[];
-  setHistory: Dispatch<SetStateAction<string[]>>;
-  //mode: string;
-  //setMode: Dispatch<SetStateAction<string>>;
+  history: [string, string][];
+  setHistory: Dispatch<SetStateAction<[string, string][]>>;
+  mode: string;
+  setMode: Dispatch<SetStateAction<string>>;
 }
 // You can use a custom interface or explicit fields or both! An alternative to the current function header might be:
 // REPLInput(history: string[], setHistory: Dispatch<SetStateAction<string[]>>)
@@ -21,7 +21,7 @@ export function REPLInput(props: REPLInputProps) {
   // const [count, setCount] = useState<number>(0);
 
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
-  const [mode, setMode] = useState<string>("brief");
+  //const [mode, setMode] = useState<string>("brief");
 
   // This function is triggered when the button is clicked.
   function handleSubmit(commandString: string) {
@@ -37,15 +37,10 @@ export function REPLInput(props: REPLInputProps) {
     // changing mode first since this impacts what gets added to history below
     // for testing, check to make sure that setMode switches at correct time or if it lags bc using state
     if (commandString == "mode verbose") {
-      setMode("verbose");
+      props.setMode("verbose");
     }
     if (commandString == "mode brief") {
-      setMode("brief");
-    }
-
-    // adding command to history based on if mode is verbose
-    if (mode == "verbose") {
-      props.setHistory([...props.history, "Command: " + commandString]);
+      props.setMode("brief");
     }
 
     var output = "";
@@ -53,13 +48,14 @@ export function REPLInput(props: REPLInputProps) {
     // RESULTS - which are returned no matter the mode
     switch (first_word) {
       case "mode":
-        output = "Mode has been switched to " + mode;
+        output = "Mode has been switched";
         break;
       case "load":
         setIsLoaded(true);
         break;
       case "view":
         if (!isLoaded) {
+          // same issue about not being able to set
           output = "data is not loaded so can not view"; // decide how we want errors to display, more specific
           break;
         }
@@ -75,12 +71,7 @@ export function REPLInput(props: REPLInputProps) {
         break;
     }
 
-    //if (mode == "verbose") {
-    //props.setHistory([...props.history, "Output:" + output]);
-    //}
-    if (mode == "brief") {
-      props.setHistory([...props.history, output]);
-    }
+    props.setHistory([...props.history, [commandString, output]]);
   }
 
   /**
