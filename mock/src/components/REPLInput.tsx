@@ -16,16 +16,15 @@ export function REPLInput(props: REPLInputProps) {
   // Remember: let React manage state in your webapp.
   // Manages the contents of the input box
   const [commandString, setCommandString] = useState<string>("");
+
   // Manages the current amount of times the button is clicked
-  const [count, setCount] = useState<number>(0);
+  // const [count, setCount] = useState<number>(0);
+
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [mode, setMode] = useState<string>("brief");
 
   // This function is triggered when the button is clicked.
   function handleSubmit(commandString: string) {
-    setCount(count + 1);
-    // CHANGED
-
     handleInput(commandString);
 
     setCommandString("");
@@ -76,9 +75,9 @@ export function REPLInput(props: REPLInputProps) {
         break;
     }
 
-    if (mode == "verbose") {
-      props.setHistory([...props.history, "Output:" + output]);
-    }
+    //if (mode == "verbose") {
+    //props.setHistory([...props.history, "Output:" + output]);
+    //}
     if (mode == "brief") {
       props.setHistory([...props.history, output]);
     }
@@ -103,9 +102,7 @@ export function REPLInput(props: REPLInputProps) {
         />
       </fieldset>
       {/* TODO: Currently this button just counts up, can we make it push the contents of the input box to the history?*/}
-      <button onClick={() => handleSubmit(commandString)}>
-        Submitted {count} times
-      </button>
+      <button onClick={() => handleSubmit(commandString)}>Submit</button>
     </div>
   );
 }
