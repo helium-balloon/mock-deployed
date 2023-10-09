@@ -31,4 +31,4 @@ filepath_to_CSV.set("data/food/food_data.csv", food_CSV);
 // map commands to outputs (view and search)
 
 let commands_to_outputs = new Map<string, string>();
-//commands_to_outputs.set()
+commands_to_outputs.set();
