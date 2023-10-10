@@ -17,11 +17,7 @@ export function REPLInput(props: REPLInputProps) {
   // Manages the contents of the input box
   const [commandString, setCommandString] = useState<string>("");
 
-  // Manages the current amount of times the button is clicked
-  // const [count, setCount] = useState<number>(0);
-
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
-  //const [mode, setMode] = useState<string>("brief");
 
   // This function is triggered when the button is clicked.
   function handleSubmit(commandString: string) {
@@ -32,43 +28,34 @@ export function REPLInput(props: REPLInputProps) {
 
   // helper method for handleSubmit
   function handleInput(commandString: string) {
-    var first_word = commandString.substring(0, commandString.indexOf(" "));
-
-    // changing mode first since this impacts what gets added to history below
-    // for testing, check to make sure that setMode switches at correct time or if it lags bc using state
-    if (commandString == "mode verbose") {
-      props.setMode("verbose");
-    }
-    if (commandString == "mode brief") {
-      props.setMode("brief");
-    }
-
     var output = "";
 
-    // RESULTS - which are returned no matter the mode
-    switch (first_word) {
-      case "mode":
-        output = "Mode has been switched";
-        break;
-      case "load":
-        setIsLoaded(true);
-        break;
-      case "view":
-        if (!isLoaded) {
-          // same issue about not being able to set
-          output = "data is not loaded so can not view"; // decide how we want errors to display, more specific
-          break;
-        }
-        break;
-      case "search":
-        if (!isLoaded) {
-          output = "data is not loaded so can not search"; // decide how we want errors to display, more specific
-          break;
-        }
-        break;
-      default:
-        output = "error invalid input"; // decide how we want errors to display, more specific
-        break;
+    // took out of switch statement bc somtimes was one word and other times first word
+    if (commandString == "mode") {
+      if (props.mode == "brief") {
+        props.setMode("verbose");
+        output = "Mode has been switched to verbose";
+      } else if (props.mode == "verbose") {
+        props.setMode("brief");
+        output = "Mode has been switched to brief";
+      }
+    } else if (
+      commandString.substring(0, commandString.indexOf(" ")) == "load"
+    ) {
+      // do something
+    } else if (commandString == "view") {
+      if (!isLoaded) {
+        // same issue about not being able to set
+        output = "data is not loaded so can not view"; // decide how we want errors to display, more specific
+      }
+    } else if (
+      commandString.substring(0, commandString.indexOf(" ")) == "search"
+    ) {
+      if (!isLoaded) {
+        output = "data is not loaded so can not search"; // decide how we want errors to display, more specific
+      }
+    } else {
+      output = "error invalid input"; // decide how we want errors to display, more specific
     }
 
     props.setHistory([...props.history, [commandString, output]]);
