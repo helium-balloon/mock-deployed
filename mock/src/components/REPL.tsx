@@ -32,6 +32,8 @@ export default function REPL() {
         setHistory={setHistory}
         mode={mode}
         setMode={setMode}
+        data={data}
+        setData={setData}
       />
     </div>
   );
