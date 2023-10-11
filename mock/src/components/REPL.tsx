@@ -17,13 +17,14 @@ export default function REPL() {
   // CHANGED
   const [history, setHistory] = useState<[string, string][]>([]);
   const [mode, setMode] = useState("brief"); // in case they wanted to add extra modes
+  const [data, setData] = useState<string[][]>([]);
 
   return (
     <div className="repl">
       {/*This is where your REPLHistory might go... You also may choose to add it within your REPLInput 
       component or somewhere else depending on your component organization. What are the pros and cons of each? */}
       {/* CHANGED */}
-      <REPLHistory history={history} mode={mode} />
+      <REPLHistory history={history} mode={mode} data={data} />
       <hr></hr>
       {/* CHANGED */}
       <REPLInput

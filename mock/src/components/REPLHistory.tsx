@@ -5,6 +5,7 @@ interface REPLHistoryProps {
   // CHANGED
   history: [string, string][]; // tuple with command and output
   mode: string;
+  data: string[][];
 }
 
 function handleDisplay(command: [string, string]) {}

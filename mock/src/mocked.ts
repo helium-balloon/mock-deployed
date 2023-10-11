@@ -24,13 +24,13 @@ const food_CSV = [
 ];
 
 // map filepath to above arrays
-let filepath_to_CSV = new Map<string, string[][]>();
+export let filepath_to_CSV = new Map<string, string[][]>();
 filepath_to_CSV.set("data/stars/ten-star.csv", star_CSV);
 filepath_to_CSV.set("data/food/food_data.csv", food_CSV);
 
 // map commands to outputs (view and search)
 
-let commands_to_outputs = new Map<string, Object>();
+export let commands_to_outputs = new Map<string, Object>();
 //load
 // include loadCSV in map; possibly change output
 commands_to_outputs.set("load_file data/stars/ten-star.csv", "success");

@@ -1,6 +1,7 @@
 import "../styles/main.css";
 import { Dispatch, SetStateAction, useState } from "react";
 import { ControlledInput } from "./ControlledInput";
+import { filepath_to_CSV } from "../mocked";
 
 interface REPLInputProps {
   // TODO: Fill this with desired props... Maybe something to keep track of the submitted commands
@@ -9,6 +10,8 @@ interface REPLInputProps {
   setHistory: Dispatch<SetStateAction<[string, string][]>>;
   mode: string;
   setMode: Dispatch<SetStateAction<string>>;
+  data: string[][];
+  setData: Dispatch<SetStateAction<string[][]>>;
 }
 // You can use a custom interface or explicit fields or both! An alternative to the current function header might be:
 // REPLInput(history: string[], setHistory: Dispatch<SetStateAction<string[]>>)
@@ -43,16 +46,27 @@ export function REPLInput(props: REPLInputProps) {
       commandString.substring(0, commandString.indexOf(" ")) === "load"
     ) {
       setIsLoaded(true);
+      let csvData = filepath_to_CSV.get(
+        commandString.substring(commandString.indexOf(" ") + 1)
+      );
+      if (csvData !== undefined && csvData !== null) {
+        props.setData(csvData);
+      } else {
+        output = "data could not be loaded";
+      }
     } else if (commandString === "view") {
       if (!isLoaded) {
         // same issue about not being able to set
         output = "data is not loaded so can not view"; // decide how we want errors to display, more specific
+      } else {
+        output = "view command valid"; // access data in REPLHistory
       }
     } else if (
       commandString.substring(0, commandString.indexOf(" ")) === "search"
     ) {
       if (!isLoaded) {
         output = "data is not loaded so can not search"; // decide how we want errors to display, more specific
+      } else {
       }
     } else {
       output = "error invalid input"; // decide how we want errors to display, more specific
