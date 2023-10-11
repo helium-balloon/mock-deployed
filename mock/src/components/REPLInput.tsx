@@ -17,7 +17,7 @@ export function REPLInput(props: REPLInputProps) {
   // Manages the contents of the input box
   const [commandString, setCommandString] = useState<string>("");
 
-  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  let [isLoaded, setIsLoaded] = useState<boolean>(false); // use let so that can reassign
 
   // This function is triggered when the button is clicked.
   function handleSubmit(commandString: string) {
@@ -31,25 +31,25 @@ export function REPLInput(props: REPLInputProps) {
     var output = "";
 
     // took out of switch statement bc somtimes was one word and other times first word
-    if (commandString == "mode") {
-      if (props.mode == "brief") {
+    if (commandString === "mode") {
+      if (props.mode === "brief") {
         props.setMode("verbose");
         output = "Mode has been switched to verbose";
-      } else if (props.mode == "verbose") {
+      } else if (props.mode === "verbose") {
         props.setMode("brief");
         output = "Mode has been switched to brief";
       }
     } else if (
-      commandString.substring(0, commandString.indexOf(" ")) == "load"
+      commandString.substring(0, commandString.indexOf(" ")) === "load"
     ) {
-      // do something
-    } else if (commandString == "view") {
+      setIsLoaded(true);
+    } else if (commandString === "view") {
       if (!isLoaded) {
         // same issue about not being able to set
         output = "data is not loaded so can not view"; // decide how we want errors to display, more specific
       }
     } else if (
-      commandString.substring(0, commandString.indexOf(" ")) == "search"
+      commandString.substring(0, commandString.indexOf(" ")) === "search"
     ) {
       if (!isLoaded) {
         output = "data is not loaded so can not search"; // decide how we want errors to display, more specific
