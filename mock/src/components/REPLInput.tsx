@@ -38,7 +38,7 @@ export function REPLInput(props: REPLInputProps) {
     } else {
       props.setHistory([
         ...props.history,
-        [commandString, [["error invalid input"]]],
+        [commandString, [["ERROR: invalid input in command box"]]],
       ]);
     }
 
@@ -68,14 +68,11 @@ export function REPLInput(props: REPLInputProps) {
     );
     if (csvData !== undefined && csvData !== null) {
       props.setData(csvData);
-      props.setHistory([
-        ...props.history,
-        [commandString, [["Success: data loaded"]]],
-      ]);
+      props.setHistory([...props.history, [commandString, [["Data loaded"]]]]);
     } else {
       props.setHistory([
         ...props.history,
-        [commandString, [["data could not be loaded"]]],
+        [commandString, [["ERROR: data could not be loaded"]]],
       ]);
     }
   }
@@ -84,7 +81,7 @@ export function REPLInput(props: REPLInputProps) {
     if (!isLoaded) {
       props.setHistory([
         ...props.history,
-        [commandString, [["data is not loaded so can not view"]]],
+        [commandString, [["ERROR: no data loaded so cannot view"]]],
       ]);
     } else {
       props.setHistory([...props.history, [commandString, props.data]]);
@@ -95,7 +92,7 @@ export function REPLInput(props: REPLInputProps) {
     if (!isLoaded) {
       props.setHistory([
         ...props.history,
-        [commandString, [["data is not loaded so can not search"]]],
+        [commandString, [["ERROR: no data loaded so cannot search"]]],
       ]);
     } // data is loaded so can search
     else {
