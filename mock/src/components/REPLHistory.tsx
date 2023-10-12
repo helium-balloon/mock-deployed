@@ -1,11 +1,11 @@
 import "../styles/main.css";
 
 interface REPLHistoryProps {
-  // TODO: Fill with some shared state tracking all the pushed commands
-  // CHANGED
   history: [string, string[][]][]; // tuple with command and output
   mode: string;
   data: string[][];
+
+  // do not need to set values, just recieving -- defensive programming
 }
 
 function handleDisplay(output: string[][]) {
@@ -29,8 +29,7 @@ function createRow(rowContent: string[]) {
 export function REPLHistory(props: REPLHistoryProps) {
   return (
     <div className="repl-history">
-      {/* This is where command history will go */}
-      {/* TODO: To go through all the pushed commands... try the .map() function! */}
+      {/* To go through all the pushed commands use the .map() function! */}
       {props.history.map((command, index) => {
         if (props.mode == "verbose") {
           return (
