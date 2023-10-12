@@ -24,30 +24,31 @@ const food_CSV = [
 ];
 
 // map filepath to above arrays
-let filepath_to_CSV = new Map<string, string[][]>();
+export let filepath_to_CSV = new Map<string, string[][]>();
 filepath_to_CSV.set("data/stars/ten-star.csv", star_CSV);
 filepath_to_CSV.set("data/food/food_data.csv", food_CSV);
 
-// map commands to outputs (view and search)
-
-let commands_to_outputs = new Map<string, Object>();
-//load
-// include loadCSV in map; possibly change output
-commands_to_outputs.set("load_file data/stars/ten-star.csv", "success");
-commands_to_outputs.set("load_file data/stars/ten-star.csv", "success");
-
-//view
-// problem; only view and we have multiple files to print
-// current fix is add the name ourselves
-commands_to_outputs.set("view foodCSV", food_CSV);
-commands_to_outputs.set("view starCSV", star_CSV);
-
-// search
-commands_to_outputs.set("search 1 Sol", [1]);
-commands_to_outputs.set("search ProperName Sol", [1]);
-commands_to_outputs.set("search Sol", "1");
-commands_to_outputs.set("search strawberry", [0, 3]);
-commands_to_outputs.set("search 0 strawberry", [0]);
-commands_to_outputs.set("search", "error: no value");
-commands_to_outputs.set("search pineapple", "error: value not found");
-commands_to_outputs.set("search strawberry", [0, 3]);
+// map commands to outputs for search
+export let search_params_to_output = new Map<string[], string[][]>([
+  [["1", "Sol"], [["0", "Sol", "0", "0", "0"]]],
+  [["ProperName", "Sol"], [["0", "Sol", "0", "0", "0"]]],
+  [[" ", "Sol"], [["0", "Sol", "0", "0", "0"]]],
+  [["0", "Sol"], []],
+  [["StarID", "Sol"], []],
+  [
+    [" ", "strawberry"],
+    [
+      ["strawberry", "blueberry", "watermelon", "raspberry", "cherry"],
+      ["chocolate", "vanilla", "cookie dough", "strawberry", "cherry"],
+    ],
+  ],
+  [
+    ["0", "strawberry"],
+    [
+      ["strawberry", "blueberry", "watermelon", "raspberry", "cherry"],
+      ["chocolate", "vanilla", "cookie dough", "strawberry", "cherry"],
+    ],
+  ],
+  [["", ""], [["error: no value"]]],
+  [["", "pineapple"], [["error: no value"]]],
+]);
