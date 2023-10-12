@@ -18,8 +18,7 @@ interface REPLInputProps {
 export function REPLInput(props: REPLInputProps) {
   // Manages the contents of the input box
   const [commandString, setCommandString] = useState<string>("");
-
-  let [isLoaded, setIsLoaded] = useState<boolean>(false); // use let so that can reassign
+  let [loadedFilepath, setLoadedFilepath] = useState<string>(""); // use let so that can reassign
 
   // This function is triggered when the button is clicked.
   function handleSubmit(commandString: string) {
@@ -62,10 +61,11 @@ export function REPLInput(props: REPLInputProps) {
   }
 
   function load(commandString: string) {
-    setIsLoaded(true);
-    let csvData = filepath_to_CSV.get(
-      commandString.substring(commandString.indexOf(" ") + 1)
-    );
+    var filepath = commandString.substring(commandString.indexOf(" ") + 1);
+    let csvData = filepath_to_CSV.get(filepath);
+
+    setLoadedFilepath(filepath);
+
     if (csvData !== undefined && csvData !== null) {
       props.setData(csvData);
       props.setHistory([...props.history, [commandString, [["Data loaded"]]]]);
@@ -78,7 +78,7 @@ export function REPLInput(props: REPLInputProps) {
   }
 
   function view(commandString: string) {
-    if (!isLoaded) {
+    if (loadedFilepath === "") {
       props.setHistory([
         ...props.history,
         [commandString, [["ERROR: no data loaded so cannot view"]]],
@@ -89,7 +89,7 @@ export function REPLInput(props: REPLInputProps) {
   }
 
   function search(commandString: string) {
-    if (!isLoaded) {
+    if (loadedFilepath === "") {
       props.setHistory([
         ...props.history,
         [commandString, [["ERROR: no data loaded so cannot search"]]],
@@ -97,12 +97,17 @@ export function REPLInput(props: REPLInputProps) {
     } // data is loaded so can search
     else {
       var output = search_to_output.get(
-        commandString.substring(commandString.indexOf(" ") + 1)
+        loadedFilepath +
+          " " +
+          commandString.substring(commandString.indexOf(" ") + 1)
       );
       if (output != null) {
         props.setHistory([...props.history, [commandString, output]]);
       } else {
-        props.setHistory([...props.history, [commandString, [[]]]]);
+        props.setHistory([
+          ...props.history,
+          [commandString, [["ERROR: Search not included in mocked data"]]],
+        ]);
       }
     }
   }
