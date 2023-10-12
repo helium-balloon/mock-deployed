@@ -28,7 +28,7 @@ function createRow(rowContent: string[]) {
 
 export function REPLHistory(props: REPLHistoryProps) {
   return (
-    <div className="repl-history">
+    <div className="repl-history" aria-label="output">
       {/* To go through all the pushed commands use the .map() function! */}
       {props.history.map((command, index) => {
         if (props.mode == "verbose") {

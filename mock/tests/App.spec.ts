@@ -50,3 +50,39 @@ test("on page load, i see a button", async ({ page }) => {
 test("after I click the button, my command gets pushed", async ({ page }) => {
   // TODO: Fill this in to test your button push functionality!
 });
+
+test("after I click the button, it loads a message", async ({ page }) => {
+  await page.goto("http://localhost:8000/");
+  await page.getByPlaceholder("Enter command here!").click();
+  await page.getByPlaceholder("Enter command here!").fill("load");
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByLabel("output")).toContainText(
+    "ERROR: invalid input in command box"
+  );
+});
+
+test("after I submit a  correct load command, it loads a success output", async ({
+  page,
+}) => {
+  await page.goto("http://localhost:8000/");
+  await page.getByPlaceholder("Enter command here!").click();
+  await page
+    .getByPlaceholder("Enter command here!")
+    .fill("load_file data/stars/ten-star.csv");
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByLabel("output")).toContainText("Data loaded");
+});
+
+test("after I load and submit view, it loads the inputted file as a table", async ({
+  page,
+}) => {
+  await page.goto("http://localhost:8000/");
+  await page.getByPlaceholder("Enter command here!").click();
+  await page
+    .getByPlaceholder("Enter command here!")
+    .fill("load_file data/stars/ten-star.csv");
+  await page.getByRole("button", { name: "Submit" }).click();
+  await page.getByPlaceholder("Enter command here!").fill("view");
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByLabel("output")).toContainText("Data loaded");
+});
