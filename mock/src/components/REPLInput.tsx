@@ -2,7 +2,7 @@ import "../styles/main.css";
 import { Dispatch, SetStateAction, useState } from "react";
 import { ControlledInput } from "./ControlledInput";
 import { filepath_to_CSV } from "../mocked";
-import { commands_to_outputs } from "../mocked";
+import { search_params_to_output } from "../mocked";
 
 interface REPLInputProps {
   // TODO: Fill this with desired props... Maybe something to keep track of the submitted commands
@@ -70,7 +70,7 @@ export function REPLInput(props: REPLInputProps) {
       if (!isLoaded) {
         output = [["data is not loaded so can not search"]]; // decide how we want errors to display, more specific
       } else {
-        output = commands_to_outputs.get(commandString);
+        //output = commands_to_outputs.get(commandString);
       }
     } else {
       output = [["error invalid input"]]; // decide how we want errors to display, more specific
