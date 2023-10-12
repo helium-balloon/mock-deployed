@@ -29,26 +29,26 @@ filepath_to_CSV.set("data/stars/ten-star.csv", star_CSV);
 filepath_to_CSV.set("data/food/food_data.csv", food_CSV);
 
 // map commands to outputs for search
-export let search_params_to_output = new Map<string[], string[][]>([
-  [["1", "Sol"], [["0", "Sol", "0", "0", "0"]]],
-  [["ProperName", "Sol"], [["0", "Sol", "0", "0", "0"]]],
-  [["", "Sol"], [["0", "Sol", "0", "0", "0"]]],
-  [["0", "Sol"], []],
-  [["StarID", "Sol"], []],
+export let search_to_output = new Map<string, string[][]>([
+  ["1 Sol", [["0", "Sol", "0", "0", "0"]]],
+  ["ProperName Sol", [["0", "Sol", "0", "0", "0"]]],
+  ["Sol", [["0", "Sol", "0", "0", "0"]]],
+  ["0 Sol", []],
+  ["StarID Sol", []],
   [
-    ["", "strawberry"],
+    "strawberry",
     [
       ["strawberry", "blueberry", "watermelon", "raspberry", "cherry"],
       ["chocolate", "vanilla", "cookie dough", "strawberry", "cherry"],
     ],
   ],
   [
-    ["0", "strawberry"],
+    "0 strawberry",
     [
       ["strawberry", "blueberry", "watermelon", "raspberry", "cherry"],
       ["chocolate", "vanilla", "cookie dough", "strawberry", "cherry"],
     ],
   ],
-  [["", ""], [["error: no value"]]],
-  [["", "pineapple"], [["error: no value"]]],
+  [" ", [["error: no value"]]],
+  ["pineapple", [["error: no value"]]],
 ]);

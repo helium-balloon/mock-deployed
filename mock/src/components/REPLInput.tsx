@@ -2,7 +2,7 @@ import "../styles/main.css";
 import { Dispatch, SetStateAction, useState } from "react";
 import { ControlledInput } from "./ControlledInput";
 import { filepath_to_CSV } from "../mocked";
-import { search_params_to_output } from "../mocked";
+import { search_to_output } from "../mocked";
 
 interface REPLInputProps {
   // TODO: Fill this with desired props... Maybe something to keep track of the submitted commands
@@ -76,17 +76,10 @@ export function REPLInput(props: REPLInputProps) {
         output = [["data is not loaded so can not search"]]; // decide how we want errors to display, more specific
       } // data is loaded so can search
       else {
-        const words = commandString.split(" "); // split commandString based on spaces
-        // one word after search - no identifier, only target
-        if (words.length == 2) {
-          output = search_params_to_output.get(["", words[1]]);
-        }
-        // two words after search - identifier & target
-        else if (words.length == 3) {
-          output = search_params_to_output.get([words[1], words[2]]); // need to display error if not in our hashmap
-        } else {
-          output = [["error invalid input, please enter "]];
-        }
+        output = search_to_output.get(
+          commandString.substring(commandString.indexOf(" ") + 1)
+        );
+        // decide what to do if cannot find in mocked data
       }
     } else {
       output = [["error invalid input"]]; // decide how we want errors to display, more specific
