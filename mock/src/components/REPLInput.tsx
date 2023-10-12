@@ -2,17 +2,19 @@ import "../styles/main.css";
 import { Dispatch, SetStateAction, useState } from "react";
 import { ControlledInput } from "./ControlledInput";
 import { filepath_to_CSV } from "../mocked";
+import { commands_to_outputs } from "../mocked";
 
 interface REPLInputProps {
   // TODO: Fill this with desired props... Maybe something to keep track of the submitted commands
   // CHANGED
-  history: [string, string][];
-  setHistory: Dispatch<SetStateAction<[string, string][]>>;
+  history: [string, string[][]][];
+  setHistory: Dispatch<SetStateAction<[string, string[][]][]>>;
   mode: string;
   setMode: Dispatch<SetStateAction<string>>;
   data: string[][];
   setData: Dispatch<SetStateAction<string[][]>>;
 }
+
 // You can use a custom interface or explicit fields or both! An alternative to the current function header might be:
 // REPLInput(history: string[], setHistory: Dispatch<SetStateAction<string[]>>)
 export function REPLInput(props: REPLInputProps) {
@@ -31,19 +33,19 @@ export function REPLInput(props: REPLInputProps) {
 
   // helper method for handleSubmit
   function handleInput(commandString: string) {
-    var output = "";
+    var output;
 
     // took out of switch statement bc somtimes was one word and other times first word
     if (commandString === "mode") {
       if (props.mode === "brief") {
         props.setMode("verbose");
-        output = "Mode has been switched to verbose";
+        output = [["Mode has been switched to verbose"]];
       } else if (props.mode === "verbose") {
         props.setMode("brief");
-        output = "Mode has been switched to brief";
+        output = [["Mode has been switched to brief"]];
       }
     } else if (
-      commandString.substring(0, commandString.indexOf(" ")) === "load"
+      commandString.substring(0, commandString.indexOf(" ")) === "load_file"
     ) {
       setIsLoaded(true);
       let csvData = filepath_to_CSV.get(
@@ -51,28 +53,31 @@ export function REPLInput(props: REPLInputProps) {
       );
       if (csvData !== undefined && csvData !== null) {
         props.setData(csvData);
+        output = [["success: data loaded"]];
       } else {
-        output = "data could not be loaded";
+        output = [["data could not be loaded"]];
       }
     } else if (commandString === "view") {
       if (!isLoaded) {
         // same issue about not being able to set
-        output = "data is not loaded so can not view"; // decide how we want errors to display, more specific
+        output = [["data is not loaded so can not view"]]; // decide how we want errors to display, more specific
       } else {
-        output = "view command valid"; // access data in REPLHistory
+        output = props.data; // access data in REPLHistory
       }
     } else if (
       commandString.substring(0, commandString.indexOf(" ")) === "search"
     ) {
       if (!isLoaded) {
-        output = "data is not loaded so can not search"; // decide how we want errors to display, more specific
+        output = [["data is not loaded so can not search"]]; // decide how we want errors to display, more specific
       } else {
+        output = commands_to_outputs.get(commandString);
       }
     } else {
-      output = "error invalid input"; // decide how we want errors to display, more specific
+      output = [["error invalid input"]]; // decide how we want errors to display, more specific
     }
-
-    props.setHistory([...props.history, [commandString, output]]);
+    if (output != undefined) {
+      props.setHistory([...props.history, [commandString, output]]);
+    }
   }
 
   /**
