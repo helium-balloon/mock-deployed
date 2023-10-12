@@ -53,11 +53,7 @@ export function REPLInput(props: REPLInputProps) {
       );
       if (csvData !== undefined && csvData !== null) {
         props.setData(csvData);
-<<<<<<< HEAD
-        output = "success: data loaded";
-=======
         output = [["success: data loaded"]];
->>>>>>> 0e73f4e87c728d6b855d1856d5e451643dd606a2
       } else {
         output = [["data could not be loaded"]];
       }
