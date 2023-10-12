@@ -2,7 +2,7 @@ import "../styles/main.css";
 import { Dispatch, SetStateAction, useState } from "react";
 import { ControlledInput } from "./ControlledInput";
 import { filepath_to_CSV } from "../mocked";
-import { search_params_to_output } from "../mocked";
+import { search_to_output } from "../mocked";
 
 interface REPLInputProps {
   // TODO: Fill this with desired props... Maybe something to keep track of the submitted commands
@@ -36,7 +36,9 @@ export function REPLInput(props: REPLInputProps) {
     var output;
 
     // took out of switch statement bc somtimes was one word and other times first word
+
     if (commandString === "mode") {
+      // changing mode
       if (props.mode === "brief") {
         props.setMode("verbose");
         output = [["Mode has been switched to verbose"]];
@@ -45,7 +47,8 @@ export function REPLInput(props: REPLInputProps) {
         output = [["Mode has been switched to brief"]];
       }
     } else if (
-      commandString.substring(0, commandString.indexOf(" ")) === "load_file"
+      // loading csv
+      commandString.substring(0, commandString.indexOf(" ")) === "load_file" // if first word "load_file"
     ) {
       setIsLoaded(true);
       let csvData = filepath_to_CSV.get(
@@ -58,6 +61,7 @@ export function REPLInput(props: REPLInputProps) {
         output = [["data could not be loaded"]];
       }
     } else if (commandString === "view") {
+      // viewing csv
       if (!isLoaded) {
         // same issue about not being able to set
         output = [["data is not loaded so can not view"]]; // decide how we want errors to display, more specific
@@ -65,12 +69,17 @@ export function REPLInput(props: REPLInputProps) {
         output = props.data; // access data in REPLHistory
       }
     } else if (
-      commandString.substring(0, commandString.indexOf(" ")) === "search"
+      // searching csv
+      commandString.substring(0, commandString.indexOf(" ")) === "search" // if first word is "search"
     ) {
       if (!isLoaded) {
         output = [["data is not loaded so can not search"]]; // decide how we want errors to display, more specific
-      } else {
-        //output = commands_to_outputs.get(commandString);
+      } // data is loaded so can search
+      else {
+        output = search_to_output.get(
+          commandString.substring(commandString.indexOf(" ") + 1)
+        );
+        // decide what to do if cannot find in mocked data
       }
     } else {
       output = [["error invalid input"]]; // decide how we want errors to display, more specific
