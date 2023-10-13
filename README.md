@@ -4,13 +4,18 @@
 
 ### Github Link: https://github.com/cs0320-f23/mock-meball-rdbrooks
 
-### Estimated Time: 15 hours
+### Estimated Time: 13 hours
 
 # Design Choices
 
-How we dealt with spaces
+In our program, we created a separate file for each React component. App is the highest level component which creates the REPL component and header of the program. Next the REPL component contains REPL History and REPL Input. REPL also handles the state of the history, mode, and data since both the REPLHistory and REPLInput components need access to these. REPL Input Handles the queries sent by the user to set the data, history, and mode. This is done in input so that the state change can occur before we do other computations based on the state in REPL History. REPL History handles the display of the history and uses the history, mode, and data that was set in REPL Input. Handling the display is done through formatting our output into a HTML table.
 
-using states for mode and data
+We utilized dependency injections via states through mode, data, and history. These three states needed to be accessed by REPL Input and REPL History, so the states were created in REPL and we used props to allows access to them. Since REPLHistory should not be changing the value of the history, mode, or data, we made the deliberate choice for the props to not include setters. In REPL Input, it set the history, mode, and data so that it could be used in REPL History.
+
+For this project, we created mocked data to show how our program would work instead of re-implementing the functions of load, view, and search as we did in past Sprints. To do this, we created maps in the mocked.ts class where we map a file to a 2D array of it's contents which is what we use to create our HTML table in history and another map where we match search terms to the correct outputs.
+
+To deal with spaces, we decided that someone could potentially search for an empty space in a file. We made sure that one of our test CSVs had this ability so we could test it. In our program if you enter "search " it will search for
+" " in the file whereas if you type "search", this will be an invalid input. This ensures that empty strings will be taken into account.
 
 # Errors/Bugs
 
