@@ -44,10 +44,7 @@ export let search_to_output = new Map<string, string[][]>([
   ],
   [
     "data/food/food_data.csv 0 strawberry",
-    [
-      ["strawberry", "blueberry", "watermelon", "raspberry", "cherry"],
-      ["chocolate", "vanilla", "cookie dough", "strawberry", "cherry"],
-    ],
+    [["strawberry", "blueberry", "watermelon", "raspberry", "cherry"]],
   ],
   ["data/food/food_data.csv ", [["No rows that match your search"]]],
   ["data/food/food_data.csv pineapple", [["No rows that match your search"]]],

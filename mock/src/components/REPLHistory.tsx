@@ -10,7 +10,7 @@ interface REPLHistoryProps {
 
 function handleDisplay(output: string[][]) {
   return (
-    <table>
+    <table aria-label="table">
       <tbody>{output.map((rowContent, rowID) => createRow(rowContent))}</tbody>
     </table>
   );

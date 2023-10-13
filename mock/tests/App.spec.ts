@@ -1,57 +1,26 @@
 import { test, expect } from "@playwright/test";
 
-/**
-  The general shapes of tests in Playwright Test are:
-    1. Navigate to a URL
-    2. Interact with the page
-    3. Assert something about the page against your expectations
-  Look for this pattern in the tests below!
- */
-
-// If you needed to do something before every test case...
-test.beforeEach(() => {
-  // ... you'd put it here.
-  // TODO: Is there something we need to do before every test case to avoid repeating code?
-});
-
-/**
- * Don't worry about the "async" yet. We'll cover it in more detail
- * for the next sprint. For now, just think about "await" as something
- * you put before parts of your test that might take time to run,
- * like any interaction with the page.
- */
 test("on page load, i see an input bar", async ({ page }) => {
-  // Notice: http, not https! Our front-end is not set up for HTTPs.
   await page.goto("http://localhost:8000/");
   await expect(page.getByLabel("Command input")).toBeVisible();
 });
 
 test("after I type into the input box, its text changes", async ({ page }) => {
-  // Step 1: Navigate to a URL
   await page.goto("http://localhost:8000/");
-
-  // Step 2: Interact with the page
-  // Locate the element you are looking for
   await page.getByLabel("Command input").click();
   await page.getByLabel("Command input").fill("Awesome command");
-
-  // Step 3: Assert something about the page
-  // Assertions are done by using the expect() function
   const mock_input = `Awesome command`;
   await expect(page.getByLabel("Command input")).toHaveValue(mock_input);
 });
 
 test("on page load, i see a button", async ({ page }) => {
-  // TODO WITH TA: Fill this in!
   await page.goto("http://localhost:8000/");
   await expect(page.getByRole("button")).toBeVisible();
 });
 
-test("after I click the button, my command gets pushed", async ({ page }) => {
-  // TODO: Fill this in to test your button push functionality!
-});
-
-test("after I click the button, it loads a message", async ({ page }) => {
+test("after I click the button with an invalid input, it loads an error message", async ({
+  page,
+}) => {
   await page.goto("http://localhost:8000/");
   await page.getByPlaceholder("Enter command here!").click();
   await page.getByPlaceholder("Enter command here!").fill("load");
@@ -61,7 +30,7 @@ test("after I click the button, it loads a message", async ({ page }) => {
   );
 });
 
-test("after I submit a  correct load command, it loads a success output", async ({
+test("after I submit a correct load command, it loads a success output", async ({
   page,
 }) => {
   await page.goto("http://localhost:8000/");
@@ -71,6 +40,8 @@ test("after I submit a  correct load command, it loads a success output", async 
     .fill("load_file data/stars/ten-star.csv");
   await page.getByRole("button", { name: "Submit" }).click();
   await expect(page.getByLabel("output")).toContainText("Data loaded");
+  // this getting table ensures that the table we created is showing up when we output something
+  await expect(page.getByLabel("table")).toBeVisible();
 });
 
 test("after I load and submit view, it loads the inputted file as a table", async ({
@@ -87,16 +58,193 @@ test("after I load and submit view, it loads the inputted file as a table", asyn
   await expect(page.getByLabel("output")).toContainText("Sol");
 });
 
-test("after I load and submit search, it loads rows with my search value", async ({
+test("after I load and submit search, it loads rows with my search value (no col given)", async ({
   page,
 }) => {
   await page.goto("http://localhost:8000/");
   await page.getByPlaceholder("Enter command here!").click();
   await page
     .getByPlaceholder("Enter command here!")
+    .fill("load_file data/stars/ten-star.csv"); // load file
+  await page.getByRole("button", { name: "Submit" }).click();
+  await page.getByPlaceholder("Enter command here!").fill("search Sol"); // search file
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByLabel("output")).toContainText("0Sol000"); // use this because it's HTML and squishes each cell together
+});
+
+// load view load view
+test("after I load and view, I can load another file and view the second file", async ({
+  page,
+}) => {
+  await page.goto("http://localhost:8000/");
+  //load and view first file
+  await page.getByPlaceholder("Enter command here!").click();
+  await page
+    .getByPlaceholder("Enter command here!")
     .fill("load_file data/stars/ten-star.csv");
   await page.getByRole("button", { name: "Submit" }).click();
+  await page.getByPlaceholder("Enter command here!").fill("view");
+  await page.getByRole("button", { name: "Submit" }).click();
+
+  // load and view second file
+  await page.getByPlaceholder("Enter command here!").click();
+  await page
+    .getByPlaceholder("Enter command here!")
+    .fill("load_file data/food/food_data.csv");
+  await page.getByRole("button", { name: "Submit" }).click();
+  await page.getByPlaceholder("Enter command here!").fill("view");
+  await page.getByRole("button", { name: "Submit" }).click();
+
+  await expect(page.getByLabel("output")).toContainText(
+    "strawberryblueberrywatermelonraspberrycherry"
+  ); // use this because it's HTML and squishes each cell together
+});
+
+test("if I submit view before load, it gives an error message", async ({
+  page,
+}) => {
+  await page.goto("http://localhost:8000/");
+  await page.getByPlaceholder("Enter command here!").fill("view");
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByLabel("output")).toContainText(
+    "ERROR: no data loaded so cannot view"
+  );
+});
+
+test("if I submit search before load, it gives an error message", async ({
+  page,
+}) => {
+  await page.goto("http://localhost:8000/");
   await page.getByPlaceholder("Enter command here!").fill("search Sol");
   await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByLabel("output")).toContainText("0Sol000");
+  await expect(page.getByLabel("output")).toContainText(
+    "ERROR: no data loaded so cannot search"
+  );
+});
+
+test("after loading and searching, I can submit view, and it loads a table with my data", async ({
+  page,
+}) => {
+  await page.goto("http://localhost:8000/");
+  await page.getByPlaceholder("Enter command here!").click();
+  await page
+    .getByPlaceholder("Enter command here!")
+    .fill("load_file data/food/food_data.csv"); // load file
+  await page.getByRole("button", { name: "Submit" }).click();
+  await page.getByPlaceholder("Enter command here!").fill("search strawberry"); // search file
+  await page.getByRole("button", { name: "Submit" }).click();
+  await page.getByPlaceholder("Enter command here!").fill("view"); // view file
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByLabel("output")).toContainText(
+    "pastapizzaburgerfriessandwich"
+  ); // use this because it's HTML and squishes each cell together
+});
+
+test("after I load and submit search, it loads rows with my search value (col # given)", async ({
+  page,
+}) => {
+  await page.goto("http://localhost:8000/");
+  await page.getByPlaceholder("Enter command here!").click();
+  await page
+    .getByPlaceholder("Enter command here!")
+    .fill("load_file data/stars/ten-star.csv"); // load file
+  await page.getByRole("button", { name: "Submit" }).click();
+  await page.getByPlaceholder("Enter command here!").fill("search 1 Sol"); // search file
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByLabel("output")).toContainText("0Sol000"); // use this because it's HTML and squishes each cell together
+});
+
+test("after I load and submit search, it loads rows with my search value (col name given)", async ({
+  page,
+}) => {
+  await page.goto("http://localhost:8000/");
+  await page.getByPlaceholder("Enter command here!").click();
+  await page
+    .getByPlaceholder("Enter command here!")
+    .fill("load_file data/stars/ten-star.csv"); // load file
+  await page.getByRole("button", { name: "Submit" }).click();
+  await page
+    .getByPlaceholder("Enter command here!")
+    .fill("search ProperName Sol"); // search file
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByLabel("output")).toContainText("0Sol000"); // use this because it's HTML and squishes each cell together
+});
+
+test("after I load and submit search, it loads rows with my search value (wrong col # given)", async ({
+  page,
+}) => {
+  await page.goto("http://localhost:8000/");
+  await page.getByPlaceholder("Enter command here!").click();
+  await page
+    .getByPlaceholder("Enter command here!")
+    .fill("load_file data/stars/ten-star.csv"); // load file
+  await page.getByRole("button", { name: "Submit" }).click();
+  await page.getByPlaceholder("Enter command here!").fill("search 0 Sol"); // search file
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByLabel("output")).toContainText(
+    "No rows that match your search"
+  );
+});
+
+test("after I load and submit search, it loads rows with my search value (wrong col name given)", async ({
+  page,
+}) => {
+  await page.goto("http://localhost:8000/");
+  await page.getByPlaceholder("Enter command here!").click();
+  await page
+    .getByPlaceholder("Enter command here!")
+    .fill("load_file data/stars/ten-star.csv"); // load file
+  await page.getByRole("button", { name: "Submit" }).click();
+  await page.getByPlaceholder("Enter command here!").fill("search StarID Sol"); // search file
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByLabel("output")).toContainText(
+    "No rows that match your search"
+  );
+});
+
+// search found in multiple rows
+test("after I load and submit search, it loads multiple rows with my search value", async ({
+  page,
+}) => {
+  await page.goto("http://localhost:8000/");
+  await page.getByPlaceholder("Enter command here!").click();
+  await page
+    .getByPlaceholder("Enter command here!")
+    .fill("load_file data/food/food_data.csv"); // load file
+  await page.getByRole("button", { name: "Submit" }).click();
+  await page.getByPlaceholder("Enter command here!").fill("search strawberry"); // search file
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByLabel("output")).toContainText(
+    "strawberryblueberrywatermelonraspberrycherrychocolatevanillacookie doughstrawberrycherry"
+  );
+});
+
+test("if I don't search a value, it gives an error", async ({ page }) => {
+  await page.goto("http://localhost:8000/");
+  await page.getByPlaceholder("Enter command here!").click();
+  await page
+    .getByPlaceholder("Enter command here!")
+    .fill("load_file data/food/food_data.csv"); // load file
+  await page.getByRole("button", { name: "Submit" }).click();
+  await page.getByPlaceholder("Enter command here!").fill("search"); // search file
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByLabel("output")).toContainText(
+    "ERROR: invalid input in command box"
+  );
+});
+
+test("if I search a value not in the csv, it gives an error", async ({
+  page,
+}) => {
+  await page.goto("http://localhost:8000/");
+  await page.getByPlaceholder("Enter command here!").click();
+  await page
+    .getByPlaceholder("Enter command here!")
+    .fill("load_file data/food/food_data.csv"); // load file
+  await page.getByRole("button", { name: "Submit" }).click();
+  await page.getByPlaceholder("Enter command here!").fill("search pineapple"); // search file
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByLabel("output")).toContainText(
+    "No rows that match your search"
+  );
 });
