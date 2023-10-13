@@ -43,6 +43,15 @@ export let search_to_output = new Map<string, string[][]>([
   ["data/stars/ten-star.csv 0 Sol", [["No rows that match your search"]]],
   ["data/stars/ten-star.csv StarID Sol", [["No rows that match your search"]]],
   [
+    // searches for empty string within ten star data
+    "data/stars/ten-star.csv ",
+    [
+      ["1", "", "282.43485", "0.00449", "5.36884"],
+      ["2", "", "43.04329", "0.00285", "-15.24144"],
+      ["3", "", "277.11358", "0.02422", "223.27753"],
+    ],
+  ],
+  [
     "data/food/food_data.csv strawberry",
     [
       ["strawberry", "blueberry", "watermelon", "raspberry", "cherry"],

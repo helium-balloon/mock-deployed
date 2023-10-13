@@ -37,10 +37,11 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
 
-    {
-      name: "firefox",
-      use: { ...devices["Desktop Firefox"] },
-    },
+    // from edstem, said we could comment this out due to connection issue
+    // {
+    //   name: "firefox",
+    //   use: { ...devices["Desktop Firefox"] },
+    // },
 
     {
       name: "webkit",
