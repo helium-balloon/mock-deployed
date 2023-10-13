@@ -59,13 +59,9 @@ function createRow(rowContent: string[]) {
  */
 export function REPLHistory(props: REPLHistoryProps) {
   return (
-<<<<<<< HEAD
     <div className="repl-history" aria-label="output">
       {/* To go through all the pushed commands use the .map() function! */}
-=======
-    <div className="repl-history">
-      {/* To go through all the pushed commands, we use the .map() function */}
->>>>>>> e092d55fea145814d21f12ff1f395ea6cfb6f6f1
+
       {props.history.map((command, index) => {
         {
           /* Checks the mode so can change format of history */
