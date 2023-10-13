@@ -84,5 +84,19 @@ test("after I load and submit view, it loads the inputted file as a table", asyn
   await page.getByRole("button", { name: "Submit" }).click();
   await page.getByPlaceholder("Enter command here!").fill("view");
   await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByLabel("output")).toContainText("Data loaded");
+  await expect(page.getByLabel("output")).toContainText("Sol");
+});
+
+test("after I load and submit search, it loads rows with my search value", async ({
+  page,
+}) => {
+  await page.goto("http://localhost:8000/");
+  await page.getByPlaceholder("Enter command here!").click();
+  await page
+    .getByPlaceholder("Enter command here!")
+    .fill("load_file data/stars/ten-star.csv");
+  await page.getByRole("button", { name: "Submit" }).click();
+  await page.getByPlaceholder("Enter command here!").fill("search Sol");
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByLabel("output")).toContainText("0Sol000");
 });
