@@ -1,4 +1,6 @@
-// headers
+// This file contains all of our mocked data to mimic what the backend returns
+
+// csv with headers
 // filepath: data/stars/ten-star.csv
 const star_CSV = [
   ["StarID", "ProperName", "X", "Y", "Z"],
@@ -14,7 +16,7 @@ const star_CSV = [
   ["118721", "", "-2.28262", "0.64697", "0.29354"],
 ];
 
-// no headers
+// csv with no headers
 // filepath: data/food/food_data.csv
 const food_CSV = [
   ["strawberry", "blueberry", "watermelon", "raspberry", "cherry"],
@@ -23,12 +25,17 @@ const food_CSV = [
   ["chocolate", "vanilla", "cookie dough", "strawberry", "cherry"],
 ];
 
-// map filepath to above arrays
+// map of filepath to above arrays (used for load command)
 export let filepath_to_CSV = new Map<string, string[][]>();
 filepath_to_CSV.set("data/stars/ten-star.csv", star_CSV);
 filepath_to_CSV.set("data/food/food_data.csv", food_CSV);
 
-// map commands to outputs for search
+/**
+ * Maps commands to outputs for search. We had to add the filepath to
+ * the key so we know which data to search. In the frontend, our code
+ * extracts the identifier and/or target and then adds the filepath
+ * to this search information when calling the map.
+ */
 export let search_to_output = new Map<string, string[][]>([
   ["data/stars/ten-star.csv 1 Sol", [["0", "Sol", "0", "0", "0"]]],
   ["data/stars/ten-star.csv ProperName Sol", [["0", "Sol", "0", "0", "0"]]],

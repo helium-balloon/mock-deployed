@@ -1,3 +1,5 @@
+/* Code copied from the gear up: specifies CSS styles for main components. */
+
 .repl {
   position: relative;
   min-height: 95vh;
@@ -5,6 +7,7 @@
 
 .repl-history {
   height: 55vh;
+  /* We changed below line so everything left-aligned (HTML table for output did automatically)*/
   text-align: left;
   display: block;
   overflow: scroll;
