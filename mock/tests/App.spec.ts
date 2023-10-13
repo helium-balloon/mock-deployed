@@ -30,7 +30,7 @@ test("after I click the button with an invalid input, it loads an error message"
   );
 });
 
-test("after I submit a correct load command, it loads a success output", async ({
+test("after I submit a correct load command, it loads a success output as a table", async ({
   page,
 }) => {
   await page.goto("http://localhost:8000/");
@@ -44,16 +44,17 @@ test("after I submit a correct load command, it loads a success output", async (
   await expect(page.getByLabel("table")).toBeVisible();
 });
 
-test("after I load and submit view, it loads the inputted file as a table", async ({
+test("after I load and submit view, it loads the inputted file", async ({
   page,
 }) => {
   await page.goto("http://localhost:8000/");
   await page.getByPlaceholder("Enter command here!").click();
   await page
-    .getByPlaceholder("Enter command here!")
+    .getByPlaceholder("Enter command here!") // load file
     .fill("load_file data/stars/ten-star.csv");
   await page.getByRole("button", { name: "Submit" }).click();
-  await page.getByPlaceholder("Enter command here!").fill("view");
+
+  await page.getByPlaceholder("Enter command here!").fill("view"); // view file
   await page.getByRole("button", { name: "Submit" }).click();
   await expect(page.getByLabel("output")).toContainText("Sol");
 });
@@ -67,12 +68,12 @@ test("after I load and submit search, it loads rows with my search value (no col
     .getByPlaceholder("Enter command here!")
     .fill("load_file data/stars/ten-star.csv"); // load file
   await page.getByRole("button", { name: "Submit" }).click();
+
   await page.getByPlaceholder("Enter command here!").fill("search Sol"); // search file
   await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByLabel("output")).toContainText("0Sol000"); // use this because it's HTML and squishes each cell together
+  await expect(page.getByLabel("output")).toContainText("0Sol000"); // HTML squishes each cell together
 });
 
-// load view load view
 test("after I load and view, I can load another file and view the second file", async ({
   page,
 }) => {
@@ -122,7 +123,7 @@ test("if I submit search before load, it gives an error message", async ({
   );
 });
 
-test("after loading and searching, I can submit view, and it loads a table with my data", async ({
+test("after loading and searching, I can submit view, and it loads my data", async ({
   page,
 }) => {
   await page.goto("http://localhost:8000/");
@@ -131,8 +132,10 @@ test("after loading and searching, I can submit view, and it loads a table with 
     .getByPlaceholder("Enter command here!")
     .fill("load_file data/food/food_data.csv"); // load file
   await page.getByRole("button", { name: "Submit" }).click();
+
   await page.getByPlaceholder("Enter command here!").fill("search strawberry"); // search file
   await page.getByRole("button", { name: "Submit" }).click();
+
   await page.getByPlaceholder("Enter command here!").fill("view"); // view file
   await page.getByRole("button", { name: "Submit" }).click();
   await expect(page.getByLabel("output")).toContainText(
@@ -149,6 +152,7 @@ test("after I load and submit search, it loads rows with my search value (col # 
     .getByPlaceholder("Enter command here!")
     .fill("load_file data/stars/ten-star.csv"); // load file
   await page.getByRole("button", { name: "Submit" }).click();
+
   await page.getByPlaceholder("Enter command here!").fill("search 1 Sol"); // search file
   await page.getByRole("button", { name: "Submit" }).click();
   await expect(page.getByLabel("output")).toContainText("0Sol000"); // use this because it's HTML and squishes each cell together
@@ -163,6 +167,7 @@ test("after I load and submit search, it loads rows with my search value (col na
     .getByPlaceholder("Enter command here!")
     .fill("load_file data/stars/ten-star.csv"); // load file
   await page.getByRole("button", { name: "Submit" }).click();
+
   await page
     .getByPlaceholder("Enter command here!")
     .fill("search ProperName Sol"); // search file
@@ -179,6 +184,7 @@ test("after I load and submit search, it loads rows with my search value (wrong 
     .getByPlaceholder("Enter command here!")
     .fill("load_file data/stars/ten-star.csv"); // load file
   await page.getByRole("button", { name: "Submit" }).click();
+
   await page.getByPlaceholder("Enter command here!").fill("search 0 Sol"); // search file
   await page.getByRole("button", { name: "Submit" }).click();
   await expect(page.getByLabel("output")).toContainText(
@@ -195,6 +201,7 @@ test("after I load and submit search, it loads rows with my search value (wrong 
     .getByPlaceholder("Enter command here!")
     .fill("load_file data/stars/ten-star.csv"); // load file
   await page.getByRole("button", { name: "Submit" }).click();
+
   await page.getByPlaceholder("Enter command here!").fill("search StarID Sol"); // search file
   await page.getByRole("button", { name: "Submit" }).click();
   await expect(page.getByLabel("output")).toContainText(
@@ -212,8 +219,10 @@ test("after I load and submit search, it loads multiple rows with my search valu
     .getByPlaceholder("Enter command here!")
     .fill("load_file data/food/food_data.csv"); // load file
   await page.getByRole("button", { name: "Submit" }).click();
+
   await page.getByPlaceholder("Enter command here!").fill("search strawberry"); // search file
   await page.getByRole("button", { name: "Submit" }).click();
+  // cookie dough has space since cell itself has space
   await expect(page.getByLabel("output")).toContainText(
     "strawberryblueberrywatermelonraspberrycherrychocolatevanillacookie doughstrawberrycherry"
   );
@@ -226,6 +235,7 @@ test("if I don't search a value, it gives an error", async ({ page }) => {
     .getByPlaceholder("Enter command here!")
     .fill("load_file data/food/food_data.csv"); // load file
   await page.getByRole("button", { name: "Submit" }).click();
+
   await page.getByPlaceholder("Enter command here!").fill("search"); // search file
   await page.getByRole("button", { name: "Submit" }).click();
   await expect(page.getByLabel("output")).toContainText(
@@ -242,9 +252,126 @@ test("if I search a value not in the csv, it gives an error", async ({
     .getByPlaceholder("Enter command here!")
     .fill("load_file data/food/food_data.csv"); // load file
   await page.getByRole("button", { name: "Submit" }).click();
+
   await page.getByPlaceholder("Enter command here!").fill("search pineapple"); // search file
   await page.getByRole("button", { name: "Submit" }).click();
   await expect(page.getByLabel("output")).toContainText(
     "No rows that match your search"
+  );
+});
+
+test("if I search for an empty string, it returns the appropriate rows", async ({
+  page,
+}) => {
+  await page.goto("http://localhost:8000/");
+  await page.getByPlaceholder("Enter command here!").click();
+  await page
+    .getByPlaceholder("Enter command here!")
+    .fill("load_file data/stars/ten-star.csv"); // load file
+  await page.getByRole("button", { name: "Submit" }).click();
+
+  await page.getByPlaceholder("Enter command here!").fill("search "); // search file
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByLabel("output")).toContainText(
+    "1282.434850.004495.36884243.043290.00285-15.241443277.113580.02422223.27753"
+  );
+});
+
+test("after I change the mode from brief to verbose, the output is correct", async ({
+  page,
+}) => {
+  await page.goto("http://localhost:8000/");
+  await page.getByPlaceholder("Enter command here!").click();
+
+  await page.getByPlaceholder("Enter command here!").fill("mode");
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByLabel("output")).toContainText(
+    "Command: mode Output: Mode has been switched to verbose"
+  );
+});
+
+test("after I change the mode from verbose to brief, the output is correct", async ({
+  page,
+}) => {
+  await page.goto("http://localhost:8000/");
+  await page.getByPlaceholder("Enter command here!").click();
+
+  await page.getByPlaceholder("Enter command here!").fill("mode"); // switch to verbose
+  await page.getByRole("button", { name: "Submit" }).click();
+
+  await page.getByPlaceholder("Enter command here!").fill("mode"); // switch to brief
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByLabel("output")).toContainText(
+    "Mode has been switched to brief"
+  );
+});
+
+// ensures mode does not disturb other commands
+test("after I load a file, change the mode, and then view, it loads the inputted file", async ({
+  page,
+}) => {
+  await page.goto("http://localhost:8000/");
+  await page.getByPlaceholder("Enter command here!").click();
+  await page
+    .getByPlaceholder("Enter command here!")
+    .fill("load_file data/stars/ten-star.csv");
+  await page.getByRole("button", { name: "Submit" }).click();
+
+  await page.getByPlaceholder("Enter command here!").fill("mode");
+  await page.getByRole("button", { name: "Submit" }).click();
+
+  await page.getByPlaceholder("Enter command here!").fill("view");
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByLabel("output")).toContainText("Sol");
+});
+
+test("after I change the mode to verbose, I can see the command and output from load and search", async ({
+  page,
+}) => {
+  await page.goto("http://localhost:8000/");
+  await page.getByPlaceholder("Enter command here!").click();
+
+  await page.getByPlaceholder("Enter command here!").fill("mode"); // switch to verbose
+  await page.getByRole("button", { name: "Submit" }).click();
+
+  await page
+    .getByPlaceholder("Enter command here!")
+    .fill("load_file data/stars/ten-star.csv"); // load file
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByLabel("output")).toContainText(
+    "Command: load_file data/stars/ten-star.csv  Output: Data loaded"
+  );
+
+  await page.getByPlaceholder("Enter command here!").fill("search StarID Sol"); // search file
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByLabel("output")).toContainText(
+    "Command: search StarID Sol  Output: No rows that match your search"
+  );
+});
+
+test("after I change verbose and then back to brief, I can still view the file loaded", async ({
+  page,
+}) => {
+  await page.goto("http://localhost:8000/");
+  await page.getByPlaceholder("Enter command here!").click();
+
+  await page.getByPlaceholder("Enter command here!").fill("mode"); // switch to verbose
+  await page.getByRole("button", { name: "Submit" }).click();
+
+  await page
+    .getByPlaceholder("Enter command here!")
+    .fill("load_file data/stars/ten-star.csv"); // load file
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByLabel("output")).toContainText(
+    "Command: load_file data/stars/ten-star.csv  Output: Data loaded"
+  );
+
+  await page.getByPlaceholder("Enter command here!").fill("mode"); // switch to brief
+  await page.getByRole("button", { name: "Submit" }).click();
+
+  await page.getByPlaceholder("Enter command here!").fill("view"); // view file
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByLabel("output")).toContainText(
+    "71454Rigel Kentaurus B-0.50359-0.42128-1.1767"
   );
 });
